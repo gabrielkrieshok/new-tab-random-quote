@@ -7,6 +7,8 @@
       <h1>New Tab / Random Quote</h1>
       <h2>💬 Be reminded of useful/inspiring messages.</h2>
 
+      <h3>Hi! This is the demo site for the Chrome plugin, which lets you replace the default 'new tab' screen with your own randomly-selected quotations. Hit the quotation character in the top-right to see what it looks like!</h3>
+
         <toggle-button
           :width="110"
           :height="30"
@@ -69,10 +71,16 @@
         </li>
       </ul>
 
-  <transition name="slide-fade-enter">
+
+
+</section>
+
+<section>
+
+    <transition name="slide-fade-enter">
     <h2 v-if="importSuccess">Imported successfully!</h2>
   </transition>
-
+  
 <div v-if="showImport" class="dropbox">
       <vue-csv-import
       v-model="importedQuotes"
@@ -85,12 +93,14 @@
       headers=null
       ></vue-csv-import>
 
-      <p>This is the text.</p>
+      <p>File upload should be CSV with 'text' column and 'author' column headings.</p>
 </div>
 
 <div style="display:flex; flex-direction: row;">
+
       <button
         class="exportQuotes"
+        v-show="localQuotes.length"
         v-bind:class="{ active: quoteReady }"
         v-on:click="exportQuotes(localQuotes)"
         >
@@ -105,6 +115,7 @@
       </button>
 
       <button
+        v-show="localQuotes.length"
         class="removeAll"
         v-on:click="removeAllQuotes"
         >
@@ -112,15 +123,6 @@
       </button>
 </div>
 
-    </section>
-
-    <section class="quotes" v-show="!localQuotes.length">
-      <button
-        class="showImport"
-        v-on:click="showImport=!showImport"
-        >
-        Import Quotes from CSV
-      </button>
     </section>
 
     <footer>Developed by <a target="_blank" href="https://gabrielkrieshok.com">Gabriel Krieshok</a></footer>
