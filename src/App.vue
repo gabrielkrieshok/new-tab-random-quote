@@ -21,7 +21,7 @@
     </section>
 
     <section class="quote-entry">
-      <input
+      <textarea
         class="new-quote quote-text"
         ref="quotebox"
         autofocus

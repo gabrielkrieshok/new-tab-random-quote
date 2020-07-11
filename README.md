@@ -2,7 +2,7 @@
 
 💬 Be reminded of useful/inspiring messages.
 
-Web app and Chrome extension (in-progress) which lets you replace the default 'new tab' screen with your own randomly-selected quotations.
+Web app and [Chrome extension](https://chrome.google.com/webstore/detail/new-tab-random-quote/ajdmjnkmegnofepbbkaaklfopjgdocfl) which lets you replace the default 'new tab' screen with your own randomly-selected quotations.
 
 Has support for entering your own quotations, using stock quotes, import and export using browser storage.
 
