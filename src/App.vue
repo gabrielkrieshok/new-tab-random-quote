@@ -8,7 +8,7 @@
       <h2>💬 Be reminded of useful/inspiring messages.</h2>
 
       <div v-if="!chromeExtensionStatus">
-      <h3>Hi! This is the demo site for the Chrome plugin, which lets you replace the default 'new tab' screen with your own randomly-selected quotations. Hit the quotation character in the top-right to see what it looks like!</h3>
+      <h3>Hi! This is the demo site for the <a href="https://chrome.google.com/webstore/detail/new-tab-random-quote/ajdmjnkmegnofepbbkaaklfopjgdocfl">Chrome plugin</a>, which lets you replace the default 'new tab' screen with your own randomly-selected quotations. Hit the quotation character in the top-right to see what it looks like!</h3>
       </div>
 
         <toggle-button
