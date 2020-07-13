@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "New Tab Random Quote",
-  "version": "2.2",
+  "version": "2.3",
   "description": "Override the 'new tab' page to randomly shows 1 of 1,000 interesting/inspiring quotes, or update it with your own.",
   "icons": { "16": "16.png",
        		   "48": "48.png",

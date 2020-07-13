@@ -4,6 +4,19 @@ body {
 	padding: 0;
 }
 
+#app {
+	max-width: 600px;
+}
+
+@media only screen and (max-width: 600px) {
+	#app {max-width: 90%;
+	}
+	
+	blockquote.fullscreen {
+	  font-size: 2em;
+	}
+  }
+
 .icon {
 	position: absolute;
 	top: 40px;
@@ -25,7 +38,6 @@ body {
 .dropbox {
 	background-color: white;
 	padding:20px;
-
 }
 
 .vue-csv-uploader.form {
@@ -46,8 +58,7 @@ button.submitImport {
 	background-color: #0f8155;
 }
 
-button:disabled,
-button[disabled]{
+button:disabled, button[disabled]{
   background-color:#bfcbd9;
 }
 
@@ -89,10 +100,6 @@ body {
 	min-height: 100vh;
 	/* min-width: 230px; */
 	font-weight: 300;
-}
-
-#app {
-	max-width: 90%;
 }
 
 .heading {
@@ -153,35 +160,6 @@ blockquote.fullscreen {
 	display: block;
 	top: 30%;
 }
-
-@media only screen and (max-width: 600px) {
-	blockquote.fullscreen {
-	  font-size: 2em;
-	}
-  }
-
-/* blockquote p.text:before {
-	margin-right: 0.25em;
-	content: open-quote;
-	position: relative;
-	display: inline-block;
-}
-
-blockquote p.text:after {
-	content: close-quote;
-} */
-
-/* blockquote p.text:before,
-blockquote:after {
-  display: inline-block;
-  vertical-align: bottom;
-  font-size: 4em;
-  top: .2em;
-} */
-
-/* blockquote.fullscreen p.text:before {
-	left: -2em;
-} */
 
 blockquote p.author {
 	text-align: right;
@@ -331,23 +309,25 @@ hr {
 .quote-list li .destroy {
 	display: none;
 	position: absolute;
+	background-color: #dddddd;
+	border-radius: 50%;
+	text-align: center;
+	height: 23px;
+	width: 23px;
 	top: 10px;
 	right: 15px;
 	margin: auto 0;
-	font-size: 30px;
+	font-size: 20px;
 	font-weight: 300;
 	color: #d85353;
-	margin-bottom: 11px;
-	transition: color 0.2s ease-out;
 }
 
 .quote-list li .destroy:hover {
-	color: #d85353;
 	cursor: pointer;
 }
 
 .quote-list li .destroy:after {
-	content: 'x';
+	content: '✘';
 }
 
 .quote-list li:hover .destroy {

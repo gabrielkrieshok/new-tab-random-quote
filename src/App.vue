@@ -7,7 +7,9 @@
       <h1>New Tab / Random Quote</h1>
       <h2>💬 Be reminded of useful/inspiring messages.</h2>
 
+      <div v-if="!chromeExtensionStatus">
       <h3>Hi! This is the demo site for the Chrome plugin, which lets you replace the default 'new tab' screen with your own randomly-selected quotations. Hit the quotation character in the top-right to see what it looks like!</h3>
+      </div>
 
         <toggle-button
           :width="110"
@@ -146,12 +148,14 @@ export default {
     newQuoteAuthor: "",
     importedQuotes: [],
     showImport: false,
-    importSuccess: false
+    importSuccess: false,
+    chromeExtensionStatus: false
     }
   },
   created: function () {
     const _self = this;
     if (window.chrome && chrome.runtime && chrome.runtime.id) { // Checks to see if running as a Chrome extension (and not just in a chrome browser)
+      this.chromeExtensionStatus = true
       chrome.storage.sync.get({ // Asynchronous call to Chrome storage for user-created quotes (local quotes) and settings
         localQuotes: [], 
         useStock: true
