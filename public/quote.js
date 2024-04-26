@@ -11,7 +11,7 @@ document.body.onload =  function() {
 
  async function getChromeStorage() {
     try {
-      await chrome.storage.sync.get(['localQuotes','useStock'], function (value) {
+      await chrome.storage.local.get(['localQuotes','useStock'], function (value) {
       useStock = (value.useStock !=false) ? true : false
       localQuotes = value.localQuotes ? value.localQuotes : []
       quoteCompiler();
