@@ -156,7 +156,7 @@ export default {
     const _self = this;
     if (window.chrome && chrome.runtime && chrome.runtime.id) { // Checks to see if running as a Chrome extension (and not just in a chrome browser)
       this.chromeExtensionStatus = true
-      chrome.storage.sync.get({ // Asynchronous call to Chrome storage for user-created quotes (local quotes) and settings
+      chrome.storage.local.get({ // Asynchronous call to Chrome storage for user-created quotes (local quotes) and settings
         localQuotes: [], 
         useStock: true
       }, function (setting) {
@@ -210,7 +210,7 @@ export default {
     saveSettings () {
       if (window.chrome && chrome.runtime && chrome.runtime.id) { // Chrome extension save mode
         const _self = this;
-        chrome.storage.sync.set({
+        chrome.storage.local.set({
           localQuotes: _self.localQuotes,
           useStock: _self.useStock
         })
