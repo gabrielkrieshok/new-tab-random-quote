@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab - Random Quote</title>
+    <link rel="stylesheet" href="css/newtab.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <div class="settings-button" id="settingsBtn" title="Settings">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="3"></circle>
+                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+            </svg>
+        </div>
+        
+        <div class="quote-container" id="quoteContainer">
+            <blockquote class="quote" id="quoteText">
+                Loading your daily inspiration...
+            </blockquote>
+            <cite class="author" id="quoteAuthor"></cite>
+        </div>
+        
+    </div>
+    
+    <!-- Settings Modal -->
+    <div class="modal-overlay" id="settingsModal" style="display: none;">
+        <div class="modal-container">
+            <div class="modal-header">
+                <h1>Quote Extension Settings</h1>
+                <p>Customize your daily inspiration experience</p>
+                <button id="closeModalBtn" class="close-modal-button" title="Close Settings">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="18" y1="6" x2="6" y2="18"></line>
+                        <line x1="6" y1="6" x2="18" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="modal-content">
+                <!-- Quote Sources Section -->
+                <div class="modal-section">
+                    <h2>Quote Sources</h2>
+                    <div class="setting-group">
+                        <label class="switch-label">
+                            <input type="checkbox" id="useStock" class="switch-input">
+                            <span class="switch-slider"></span>
+                            Use built-in quote collection (1000+ quotes)
+                        </label>
+                        <p class="setting-description">Include our curated collection of inspiring quotes from famous authors, thinkers, and leaders.</p>
+                    </div>
+                </div>
+
+                <!-- Theme Section -->
+                <div class="modal-section">
+                    <h2>Appearance</h2>
+                    <p class="section-description">Choose your preferred theme for the quote display.</p>
+                    
+                    <div class="theme-selector">
+                        <div class="theme-option">
+                            <input type="radio" id="lightTheme" name="theme" value="light" class="theme-radio">
+                            <label for="lightTheme" class="theme-label">
+                                <div class="theme-preview light-preview"></div>
+                                <span>Light</span>
+                            </label>
+                        </div>
+                        
+                        <div class="theme-option">
+                            <input type="radio" id="darkTheme" name="theme" value="dark" class="theme-radio">
+                            <label for="darkTheme" class="theme-label">
+                                <div class="theme-preview dark-preview"></div>
+                                <span>Dark</span>
+                            </label>
+                        </div>
+                        
+                        <div class="theme-option">
+                            <input type="radio" id="natureTheme" name="theme" value="nature" class="theme-radio">
+                            <label for="natureTheme" class="theme-label">
+                                <div class="theme-preview nature-preview"></div>
+                                <span>Nature</span>
+                            </label>
+                        </div>
+                        
+                        <div class="theme-option">
+                            <input type="radio" id="gradientTheme" name="theme" value="gradient" class="theme-radio">
+                            <label for="gradientTheme" class="theme-label">
+                                <div class="theme-preview gradient-preview"></div>
+                                <span>Gradient</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AirTable Integration Section -->
+                <div class="modal-section">
+                    <h2>AirTable Integration</h2>
+                    <p class="section-description">Connect to your personal AirTable database to sync quotes.</p>
+                    
+                    <div class="setting-group">
+                        <label class="switch-label">
+                            <input type="checkbox" id="airtableEnabled" class="switch-input">
+                            <span class="switch-slider"></span>
+                            Enable AirTable integration
+                        </label>
+                        <p class="setting-description">Connect to your AirTable base to automatically sync quotes.</p>
+                    </div>
+
+                    <div class="airtable-config" id="airtableConfig" style="display: none;">
+                        <div class="form-group">
+                            <label for="airtableToken">Personal Access Token</label>
+                            <input type="password" id="airtableToken" placeholder="Enter your AirTable Personal Access Token">
+                            <p class="field-help">Get your token from <a href="https://airtable.com/create/tokens" target="_blank">AirTable Developer Hub</a></p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="airtableBaseId">Base ID</label>
+                            <input type="text" id="airtableBaseId" placeholder="app1234567890abcd">
+                            <p class="field-help">Found in your AirTable API documentation or base URL</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="airtableTableName">Table Name</label>
+                            <input type="text" id="airtableTableName" placeholder="Quotes">
+                            <p class="field-help">The name of your table containing quotes</p>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="airtableQuoteField">Quote Field Name</label>
+                                <input type="text" id="airtableQuoteField" placeholder="Quote" value="Quote">
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="airtableAuthorField">Author Field Name</label>
+                                <input type="text" id="airtableAuthorField" placeholder="Author" value="Author">
+                            </div>
+                        </div>
+                        
+                        <div class="airtable-actions">
+                            <button id="testConnectionBtn" class="btn btn-secondary">Test Connection</button>
+                            <button id="syncNowBtn" class="btn btn-primary">Sync Now</button>
+                        </div>
+                        
+                        <div class="sync-settings">
+                            <h4>Sync Settings</h4>
+                            
+                            <div class="setting-group">
+                                <label class="switch-label">
+                                    <input type="checkbox" id="airtableAutoSync" class="switch-input">
+                                    <span class="switch-slider"></span>
+                                    Enable automatic sync
+                                </label>
+                            </div>
+                            
+                            <div class="form-group" id="syncFrequencyGroup" style="display: none;">
+                                <label for="syncFrequency">Sync Frequency</label>
+                                <select id="syncFrequency" class="form-select">
+                                    <option value="hourly">Every Hour</option>
+                                    <option value="daily" selected>Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                </select>
+                            </div>
+                        </div>
+                        
+                        <div class="sync-status" id="syncStatus">
+                            <div class="status-row">
+                                <span class="status-label">Last Sync:</span>
+                                <span id="lastSyncTime">Never</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">Quotes Synced:</span>
+                                <span id="syncedQuoteCount">0</span>
+                            </div>
+                            <div class="status-row">
+                                <span class="status-label">Background Script:</span>
+                                <span id="backgroundStatus">Checking...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Custom Quotes Section -->
+                <div class="modal-section">
+                    <h2>Your Custom Quotes</h2>
+                    <p class="section-description">Add your own personal collection of inspiring quotes.</p>
+                    
+                    <div class="quote-form">
+                        <div class="form-group">
+                            <label for="newQuoteText">Quote Text</label>
+                            <textarea id="newQuoteText" placeholder="Enter your favorite quote here..." rows="3"></textarea>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="newQuoteAuthor">Author</label>
+                            <input type="text" id="newQuoteAuthor" placeholder="Quote author or source">
+                        </div>
+                        
+                        <button id="addQuoteBtn" class="btn btn-primary">Add Quote</button>
+                    </div>
+
+                    <div class="quote-stats">
+                        <span id="quoteCount">0 custom quotes</span>
+                        <div class="quote-actions">
+                            <button id="exportBtn" class="btn btn-secondary">Export</button>
+                            <button id="clearAllBtn" class="btn btn-danger">Clear All</button>
+                        </div>
+                    </div>
+
+                    <div class="quote-list" id="quoteList">
+                        <!-- Custom quotes will be populated here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+    
+    <script src="js/newtab.js"></script>
+</body>
+</html>
