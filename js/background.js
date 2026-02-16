@@ -51,7 +51,7 @@ class SyncManager {
                     hourly: 60,
                     daily: 24 * 60,
                     weekly: 7 * 24 * 60
-                }[settings.syncFrequency];
+                }[settings.syncFrequency || 'daily'];
 
                 if (periodInMinutes) {
                     await chrome.alarms.create('airtableSync', {

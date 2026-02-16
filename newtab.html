@@ -13,14 +13,14 @@
     <!-- Hover trigger area for settings -->
     <div class="settings-trigger"></div>
 
-    <div class="container">
-        <div class="settings-button" id="settingsBtn" title="Settings (hover top-right corner)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <circle cx="12" cy="12" r="3"></circle>
-                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-            </svg>
-        </div>
+    <div class="settings-button" id="settingsBtn" title="Settings (hover top-right corner)">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1 1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+    </div>
 
+    <div class="container">
         <div class="quote-container" id="quoteContainer">
             <blockquote class="quote" id="quoteText">
                 Loading your daily inspiration...
@@ -96,7 +96,7 @@
                             <label class="switch-label">
                                 <input type="checkbox" id="useStock" class="switch-input">
                                 <span class="switch-slider"></span>
-                                Use built-in quote collection (1000+ quotes)
+                                Use built-in quote collection (100+ quotes)
                             </label>
                         </div>
 
@@ -108,18 +108,18 @@
                                 <p>A minimalist Chrome extension that transforms your new tab page into a source of daily inspiration with carefully curated quotes.</p>
 
                                 <div class="about-details">
-                                    <p><strong>Version:</strong> 4.0.0</p>
-                                    <p><strong>Designed by:</strong> [Your Name]</p>
+                                    <p><strong>Version:</strong> <span id="extensionVersion">4.1.0</span></p>
+                                    <p><strong>Designed by:</strong> Gabriel Krieshok</p>
                                 </div>
 
                                 <p class="about-description">
-                                    Built with modern web standards (Manifest V3, ES Modules) and a focus on simplicity, privacy, and performance. Features 1000+ curated quotes, custom quote management, AirTable integration, CSV import, and automatic theme detection.
+                                    Built with modern web standards (Manifest V3, ES Modules) and a focus on simplicity, privacy, and performance. Features 100+ curated quotes, custom quote management, AirTable integration, CSV import, and automatic theme detection.
                                 </p>
 
                                 <p class="about-links">
-                                    <a href="https://github.com/yourusername/new-tab-random-quote" target="_blank" class="about-link">GitHub</a>
+                                    <a href="https://github.com/gabrielkrieshok/new-tab-random-quote" target="_blank" class="about-link">GitHub</a>
                                     <span class="link-separator">•</span>
-                                    <a href="https://github.com/yourusername/new-tab-random-quote/issues" target="_blank" class="about-link">Report Issue</a>
+                                    <a href="https://github.com/gabrielkrieshok/new-tab-random-quote/issues" target="_blank" class="about-link">Report Issue</a>
                                 </p>
                             </div>
                         </div>
@@ -155,6 +155,86 @@
                                         <div class="theme-preview dark-preview"></div>
                                         <span>Dark</span>
                                     </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="setting-group">
+                            <h3 class="setting-subtitle">Color Scheme</h3>
+                            <p class="setting-description">Choose a color palette for your theme</p>
+                            <div class="color-scheme-selector">
+                                <label class="color-scheme-option">
+                                    <input type="radio" name="colorScheme" value="default" id="schemeDefault">
+                                    <div class="scheme-preview">
+                                        <span class="scheme-swatch" style="background: #f8fafc"></span>
+                                        <span class="scheme-swatch" style="background: #0f172a"></span>
+                                    </div>
+                                    <span class="scheme-name">Default</span>
+                                </label>
+                                <label class="color-scheme-option">
+                                    <input type="radio" name="colorScheme" value="warm" id="schemeWarm">
+                                    <div class="scheme-preview">
+                                        <span class="scheme-swatch" style="background: #faf6f1"></span>
+                                        <span class="scheme-swatch" style="background: #2c1f14"></span>
+                                    </div>
+                                    <span class="scheme-name">Warm</span>
+                                </label>
+                                <label class="color-scheme-option">
+                                    <input type="radio" name="colorScheme" value="ocean" id="schemeOcean">
+                                    <div class="scheme-preview">
+                                        <span class="scheme-swatch" style="background: #f0f7fa"></span>
+                                        <span class="scheme-swatch" style="background: #0c2233"></span>
+                                    </div>
+                                    <span class="scheme-name">Ocean</span>
+                                </label>
+                                <label class="color-scheme-option">
+                                    <input type="radio" name="colorScheme" value="forest" id="schemeForest">
+                                    <div class="scheme-preview">
+                                        <span class="scheme-swatch" style="background: #f2f7f0"></span>
+                                        <span class="scheme-swatch" style="background: #142214"></span>
+                                    </div>
+                                    <span class="scheme-name">Forest</span>
+                                </label>
+                                <label class="color-scheme-option">
+                                    <input type="radio" name="colorScheme" value="rose" id="schemeRose">
+                                    <div class="scheme-preview">
+                                        <span class="scheme-swatch" style="background: #faf0f2"></span>
+                                        <span class="scheme-swatch" style="background: #2d0f18"></span>
+                                    </div>
+                                    <span class="scheme-name">Rose</span>
+                                </label>
+                                <label class="color-scheme-option">
+                                    <input type="radio" name="colorScheme" value="custom" id="schemeCustom">
+                                    <div class="scheme-preview">
+                                        <span class="scheme-swatch custom-swatch-light" id="customSwatchLight"></span>
+                                        <span class="scheme-swatch custom-swatch-dark" id="customSwatchDark"></span>
+                                    </div>
+                                    <span class="scheme-name">Custom</span>
+                                </label>
+                            </div>
+
+                            <div class="custom-colors" id="customColorsSection" style="display: none">
+                                <div class="custom-colors-row">
+                                    <h4 class="custom-colors-heading">Light Mode</h4>
+                                    <div class="color-picker-group">
+                                        <label for="customLightBg">Background</label>
+                                        <input type="color" id="customLightBg" value="#f8fafc">
+                                    </div>
+                                    <div class="color-picker-group">
+                                        <label for="customLightText">Text</label>
+                                        <input type="color" id="customLightText" value="#0f172a">
+                                    </div>
+                                </div>
+                                <div class="custom-colors-row">
+                                    <h4 class="custom-colors-heading">Dark Mode</h4>
+                                    <div class="color-picker-group">
+                                        <label for="customDarkBg">Background</label>
+                                        <input type="color" id="customDarkBg" value="#0f172a">
+                                    </div>
+                                    <div class="color-picker-group">
+                                        <label for="customDarkText">Text</label>
+                                        <input type="color" id="customDarkText" value="#f1f5f9">
+                                    </div>
                                 </div>
                             </div>
                         </div>

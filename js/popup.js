@@ -1,11 +1,8 @@
-// Popup Script - Minimal interface
-import { Quotes } from './core/quotes.js';
+// Popup Script - Settings launcher
 import { Storage } from './core/storage.js';
 
 class PopupManager {
     constructor() {
-        this.quotes = [];
-        this.currentQuote = null;
         this.settings = {};
         this.init();
     }
@@ -13,8 +10,6 @@ class PopupManager {
     async init() {
         await this.loadSettings();
         this.applyTheme();
-        this.quotes = await Quotes.loadAll();
-        this.displayRandomQuote();
         this.setupEventListeners();
     }
 
@@ -26,7 +21,6 @@ class PopupManager {
     applyTheme() {
         let effectiveTheme = this.settings.theme || 'system';
 
-        // If theme is 'system', detect the system preference
         if (effectiveTheme === 'system') {
             const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
             effectiveTheme = prefersDark ? 'dark' : 'light';
@@ -34,7 +28,6 @@ class PopupManager {
 
         document.documentElement.setAttribute('data-theme', effectiveTheme);
 
-        // Apply dark mode style if in dark mode
         if (effectiveTheme === 'dark') {
             const darkStyle = this.settings.darkModeStyle || 'blue-gray';
             document.documentElement.setAttribute('data-dark-style', darkStyle);
@@ -43,27 +36,16 @@ class PopupManager {
         }
     }
 
-    displayRandomQuote() {
-        this.currentQuote = Quotes.getRandom(this.quotes);
-
-        const quoteText = document.getElementById('quoteText');
-        const quoteAuthor = document.getElementById('quoteAuthor');
-
-        if (this.currentQuote) {
-            quoteText.textContent = this.currentQuote.text;
-            quoteAuthor.textContent = `— ${this.currentQuote.author}`;
-        }
-    }
-
     setupEventListeners() {
-        // New quote button
-        document.getElementById('newQuoteBtn').addEventListener('click', () => {
-            this.displayRandomQuote();
+        // Settings button - opens new tab with settings modal
+        document.getElementById('settingsBtn').addEventListener('click', () => {
+            chrome.tabs.create({ url: chrome.runtime.getURL('newtab.html?settings=true') });
+            window.close();
         });
 
         // Open new tab button
         document.getElementById('openTabBtn').addEventListener('click', () => {
-            chrome.tabs.create({ url: 'chrome://newtab/' });
+            chrome.tabs.create({ url: chrome.runtime.getURL('newtab.html') });
             window.close();
         });
 

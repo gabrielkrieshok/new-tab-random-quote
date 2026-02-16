@@ -88,6 +88,67 @@ export const Quotes = {
         return true;
     },
 
+    // Update custom quote by index
+    async update(index, text, author) {
+        if (!text?.trim() || !author?.trim()) {
+            throw new Error('Quote text and author are required');
+        }
+
+        const data = await Storage.get(['customQuotes']);
+        const customQuotes = data.customQuotes || [];
+
+        if (index < 0 || index >= customQuotes.length) {
+            throw new Error('Invalid quote index');
+        }
+
+        // Check for duplicates (excluding the quote being edited)
+        const duplicate = customQuotes.find((q, i) =>
+            i !== index &&
+            q.text.toLowerCase() === text.toLowerCase() &&
+            q.author.toLowerCase() === author.toLowerCase()
+        );
+
+        if (duplicate) {
+            throw new Error('This quote already exists');
+        }
+
+        customQuotes[index] = { text: text.trim(), author: author.trim() };
+        await Storage.set({ customQuotes });
+        return true;
+    },
+
+    // Add multiple quotes in a single storage operation
+    async addBatch(newQuotes) {
+        const data = await Storage.get(['customQuotes']);
+        const customQuotes = data.customQuotes || [];
+
+        let added = 0;
+        let skipped = 0;
+
+        for (const quote of newQuotes) {
+            if (!quote.text?.trim() || !quote.author?.trim()) {
+                skipped++;
+                continue;
+            }
+
+            const duplicate = customQuotes.find(q =>
+                q.text.toLowerCase() === quote.text.toLowerCase() &&
+                q.author.toLowerCase() === quote.author.toLowerCase()
+            );
+
+            if (duplicate) {
+                skipped++;
+                continue;
+            }
+
+            customQuotes.push({ text: quote.text.trim(), author: quote.author.trim() });
+            added++;
+        }
+
+        await Storage.set({ customQuotes });
+        return { added, skipped };
+    },
+
     // Delete custom quote by index
     async delete(index) {
         const data = await Storage.get(['customQuotes']);

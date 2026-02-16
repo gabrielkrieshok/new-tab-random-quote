@@ -89,7 +89,6 @@ body {
   width: 150px;
   height: 150px;
   z-index: 99;
-  pointer-events: none;
 }
 
 .settings-button {
@@ -309,10 +308,10 @@ body {
 .modal-container {
   background: var(--bg-color);
   border-radius: 12px;
-  max-width: 800px;
+  max-width: 960px;
   width: 100%;
-  height: 600px;
-  max-height: 85vh;
+  height: 720px;
+  max-height: 90vh;
   overflow: hidden;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   transform: scale(0.9) translateY(20px);
@@ -585,7 +584,17 @@ body {
 }
 
 .system-preview {
-  background: linear-gradient(90deg, #ffffff 50%, #1e293b 50%);
+  background: #ffffff;
+}
+
+.system-preview::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 50%;
+  height: 100%;
+  background: #1e293b;
 }
 
 .light-preview {
@@ -594,6 +603,122 @@ body {
 
 .dark-preview {
   background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+}
+
+/* Color Scheme Selector */
+.color-scheme-selector {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.color-scheme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  padding: 0.75rem;
+  border: 2px solid var(--border-color);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  background: var(--control-bg);
+  flex: 1;
+  min-width: 70px;
+}
+
+.color-scheme-option:hover {
+  border-color: var(--accent-color);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--control-shadow);
+}
+
+.color-scheme-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.color-scheme-option:has(input:checked) {
+  border-color: var(--accent-color);
+  background: rgba(59, 130, 246, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--control-shadow);
+}
+
+.scheme-preview {
+  display: flex;
+  gap: 4px;
+}
+
+.scheme-swatch {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--border-color);
+}
+
+.custom-swatch-light,
+.custom-swatch-dark {
+  background: conic-gradient(#f8fafc 0deg, #e2e8f0 120deg, #94a3b8 240deg, #f8fafc 360deg);
+}
+
+.scheme-name {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-color);
+}
+
+.custom-colors {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1.5rem;
+}
+
+.custom-colors-row {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.custom-colors-heading {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-color);
+  opacity: 0.7;
+  margin: 0;
+}
+
+.color-picker-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.color-picker-group label {
+  font-size: 0.85rem;
+  color: var(--text-color);
+  min-width: 80px;
+}
+
+.color-picker-group input[type="color"] {
+  width: 40px;
+  height: 30px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 2px;
+  background: var(--control-bg);
+}
+
+.color-picker-group input[type="color"]::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.color-picker-group input[type="color"]::-webkit-color-swatch {
+  border: none;
+  border-radius: 3px;
 }
 
 /* Typography Preview */
