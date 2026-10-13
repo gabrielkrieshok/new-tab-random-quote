@@ -39,6 +39,13 @@ export const Remote = {
                 throw new Error('Remote quote integration is disabled');
             }
 
+            // Baserow hosts are optional permissions granted from the settings
+            // page; background syncs can't prompt, so fail with a clear message.
+            const origin = this.requiredOrigin(settings);
+            if (origin && !(await chrome.permissions.contains({ origins: [origin] }))) {
+                throw new Error(`No permission to access ${origin.replace('/*', '')}. Open settings and click Test Connection to grant it.`);
+            }
+
             const quotes = await module.fetchQuotes(settings);
             await Storage.setAirtableQuotes(quotes);
 

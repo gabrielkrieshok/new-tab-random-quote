@@ -1,6 +1,7 @@
 // Storage Module - Centralized storage management
 // Settings sync across devices via chrome.storage.sync
-// Quotes and credentials stored locally via chrome.storage.local
+// Quotes, synced remote quotes, and credentials stored locally via chrome.storage.local
+// (remote quotes are re-fetchable and often exceed sync's 8KB-per-item quota)
 export const Storage = {
     defaults: {
         settings: {
@@ -43,8 +44,8 @@ export const Storage = {
 
         try {
             const [syncData, localData] = await Promise.all([
-                chrome.storage.sync.get(['customQuotes', 'airtableSettings']),
-                chrome.storage.local.get(['customQuotes', 'airtableApiToken'])
+                chrome.storage.sync.get(null),
+                chrome.storage.local.get(['customQuotes', 'airtableApiToken', 'airtableQuotesLocal', 'airtableData'])
             ]);
 
             const syncRemoveKeys = [];
@@ -62,6 +63,30 @@ export const Storage = {
                 localWrites.airtableApiToken = syncData.airtableSettings.apiToken;
                 const { apiToken, ...rest } = syncData.airtableSettings;
                 syncWrites.airtableSettings = rest;
+            }
+
+            // Migrate remote quotes (chunked in sync, pre-4.2) and their sync metadata to local
+            const chunkKeys = Object.keys(syncData).filter(key => key.startsWith('airtableQuotes_'));
+            if (chunkKeys.length > 0 || syncData.airtableData) {
+                if (!localData.airtableQuotesLocal?.length && chunkKeys.length > 0) {
+                    const chunks = syncData.airtableData?.chunks || chunkKeys.length;
+                    const quotes = [];
+                    for (let i = 0; i < chunks; i++) {
+                        const chunk = syncData[`airtableQuotes_${i}`];
+                        if (Array.isArray(chunk)) quotes.push(...chunk);
+                    }
+                    if (quotes.length > 0) {
+                        localWrites.airtableQuotesLocal = quotes;
+                        localWrites.airtableData = {
+                            lastSync: syncData.airtableData?.lastSync || new Date().toISOString(),
+                            recordCount: quotes.length
+                        };
+                    }
+                } else if (!localData.airtableData && syncData.airtableData) {
+                    localWrites.airtableData = syncData.airtableData;
+                }
+                syncRemoveKeys.push(...chunkKeys);
+                if (syncData.airtableData) syncRemoveKeys.push('airtableData');
             }
 
             const promises = [];
@@ -90,8 +115,8 @@ export const Storage = {
             await this._migrate();
 
             const [syncResult, localResult] = await Promise.all([
-                chrome.storage.sync.get(['settings', 'airtableSettings', 'airtableData']),
-                chrome.storage.local.get(['customQuotes', 'airtableApiToken', 'baserowApiToken'])
+                chrome.storage.sync.get(['settings', 'airtableSettings']),
+                chrome.storage.local.get(['customQuotes', 'airtableApiToken', 'baserowApiToken', 'airtableData'])
             ]);
 
             return {
@@ -103,11 +128,11 @@ export const Storage = {
                     apiToken: localResult.airtableApiToken || '',
                     baserowToken: localResult.baserowApiToken || ''
                 },
-                airtableData: syncResult.airtableData || {}
+                airtableData: localResult.airtableData || {}
             };
         } catch (error) {
             console.warn('Failed to load storage:', error);
-            return { ...this.defaults };
+            return structuredClone(this.defaults);
         }
     },
 
@@ -120,8 +145,8 @@ export const Storage = {
             const localKeys = [];
 
             for (const key of keys) {
-                if (key === 'customQuotes') {
-                    localKeys.push('customQuotes');
+                if (key === 'customQuotes' || key === 'airtableData') {
+                    localKeys.push(key);
                 } else if (key === 'airtableSettings') {
                     syncKeys.push('airtableSettings');
                     localKeys.push('airtableApiToken', 'baserowApiToken');
@@ -139,6 +164,10 @@ export const Storage = {
 
             if (localKeys.includes('customQuotes')) {
                 result.customQuotes = localResult.customQuotes || [];
+            }
+
+            if (localKeys.includes('airtableData')) {
+                result.airtableData = localResult.airtableData || {};
             }
 
             if (keys.includes('airtableSettings')) {
@@ -164,8 +193,8 @@ export const Storage = {
             const localData = {};
 
             for (const [key, value] of Object.entries(data)) {
-                if (key === 'customQuotes') {
-                    localData.customQuotes = value;
+                if (key === 'customQuotes' || key === 'airtableData') {
+                    localData[key] = value;
                 } else if (key === 'airtableSettings') {
                     const { apiToken, baserowToken, ...rest } = value;
                     syncData.airtableSettings = rest;
@@ -196,93 +225,36 @@ export const Storage = {
         }
     },
 
-    // Get AirTable quotes from chunked storage
-    async getAirtableQuotes(airtableData) {
+    // Get synced remote quotes (AirTable / Baserow)
+    async getAirtableQuotes() {
         try {
-            if (!airtableData.chunks) {
-                const localData = await chrome.storage.local.get(['airtableQuotesLocal']);
-                return localData.airtableQuotesLocal || [];
-            }
-
-            const chunkKeys = [];
-            for (let i = 0; i < airtableData.chunks; i++) {
-                chunkKeys.push(`airtableQuotes_${i}`);
-            }
-
-            const chunkData = await chrome.storage.sync.get(chunkKeys);
-
-            const allQuotes = [];
-            for (let i = 0; i < airtableData.chunks; i++) {
-                const chunk = chunkData[`airtableQuotes_${i}`];
-                if (chunk && Array.isArray(chunk)) {
-                    allQuotes.push(...chunk);
-                }
-            }
-
-            return allQuotes;
+            const localData = await chrome.storage.local.get(['airtableQuotesLocal']);
+            return localData.airtableQuotesLocal || [];
         } catch (error) {
-            console.error('Failed to load AirTable quotes:', error);
-            try {
-                const localData = await chrome.storage.local.get(['airtableQuotesLocal']);
-                return localData.airtableQuotesLocal || [];
-            } catch {
-                return [];
-            }
+            console.error('Failed to load remote quotes:', error);
+            return [];
         }
     },
 
-    // Store AirTable quotes in chunks
+    // Store synced remote quotes and their sync metadata
     async setAirtableQuotes(quotes) {
-        try {
-            await this.clearAirtableQuotes();
-
-            const chunkSize = 50;
-            const chunks = [];
-            for (let i = 0; i < quotes.length; i += chunkSize) {
-                chunks.push(quotes.slice(i, i + chunkSize));
+        await chrome.storage.local.set({
+            airtableQuotesLocal: quotes,
+            airtableData: {
+                lastSync: new Date().toISOString(),
+                recordCount: quotes.length
             }
-
-            const storePromises = chunks.map((chunk, index) =>
-                chrome.storage.sync.set({ [`airtableQuotes_${index}`]: chunk })
-            );
-
-            await Promise.all(storePromises);
-
-            await this.set({
-                airtableData: {
-                    lastSync: new Date().toISOString(),
-                    recordCount: quotes.length,
-                    chunks: chunks.length
-                }
-            });
-
-            console.log(`Stored ${quotes.length} quotes in ${chunks.length} chunks`);
-            return true;
-        } catch (error) {
-            console.error('Failed to store AirTable quotes:', error);
-            try {
-                await chrome.storage.local.set({ airtableQuotesLocal: quotes });
-                console.log('Stored quotes in local storage as fallback');
-                return true;
-            } catch {
-                return false;
-            }
-        }
+        });
+        console.log(`Stored ${quotes.length} remote quotes`);
+        return true;
     },
 
-    // Clear AirTable quotes
+    // Clear synced remote quotes
     async clearAirtableQuotes() {
         try {
-            const allData = await chrome.storage.sync.get(null);
-            const chunkKeys = Object.keys(allData).filter(key => key.startsWith('airtableQuotes_'));
-
-            if (chunkKeys.length > 0) {
-                await chrome.storage.sync.remove(chunkKeys);
-            }
-
-            await chrome.storage.local.remove(['airtableQuotesLocal']);
+            await chrome.storage.local.remove(['airtableQuotesLocal', 'airtableData']);
         } catch (error) {
-            console.warn('Failed to clear AirTable quotes:', error);
+            console.warn('Failed to clear remote quotes:', error);
         }
     },
 

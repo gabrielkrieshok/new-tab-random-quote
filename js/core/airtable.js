@@ -1,13 +1,21 @@
 // AirTable Module - Simplified AirTable integration
 export const AirTable = {
+    validate(settings) {
+        if (!settings?.apiToken || !settings?.baseId || !settings?.tableName) {
+            throw new Error('Missing required AirTable configuration');
+        }
+    },
+
+    tableUrl(settings) {
+        return `https://api.airtable.com/v0/${encodeURIComponent(settings.baseId)}/${encodeURIComponent(settings.tableName)}`;
+    },
+
     // Test connection to AirTable
     async testConnection(settings) {
         try {
-            if (!settings?.apiToken || !settings?.baseId || !settings?.tableName) {
-                throw new Error('Missing required AirTable configuration');
-            }
+            this.validate(settings);
 
-            const url = `https://api.airtable.com/v0/${settings.baseId}/${settings.tableName}?maxRecords=1`;
+            const url = `${this.tableUrl(settings)}?maxRecords=1`;
 
             const response = await fetch(url, {
                 headers: {
@@ -29,7 +37,8 @@ export const AirTable = {
 
     // Fetch all quotes from AirTable (with pagination)
     async fetchQuotes(settings, offset = null, allQuotes = []) {
-        const url = new URL(`https://api.airtable.com/v0/${settings.baseId}/${settings.tableName}`);
+        this.validate(settings);
+        const url = new URL(this.tableUrl(settings));
 
         if (offset) url.searchParams.set('offset', offset);
         url.searchParams.set('pageSize', '100');

@@ -15,7 +15,7 @@ export const Quotes = {
 
             // Add AirTable / Baserow quotes if enabled
             if (data.airtableSettings.enabled) {
-                const airtableQuotes = await Storage.getAirtableQuotes(data.airtableData);
+                const airtableQuotes = await Storage.getAirtableQuotes();
                 if (airtableQuotes.length > 0) {
                     quotes.push(...airtableQuotes);
                 }

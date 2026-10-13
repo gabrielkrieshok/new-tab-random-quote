@@ -33,13 +33,16 @@ export const Baserow = {
         return response.json();
     },
 
+    validate(settings) {
+        if (!settings?.baserowToken || !settings?.baserowTableId) {
+            throw new Error('Missing required Baserow configuration');
+        }
+    },
+
     // Test connection to Baserow
     async testConnection(settings) {
         try {
-            if (!settings?.baserowToken || !settings?.baserowTableId) {
-                throw new Error('Missing required Baserow configuration');
-            }
-
+            this.validate(settings);
             await this.request(settings, this.rowsUrl(settings, 1, 1));
             return { success: true, message: 'Connection successful!' };
         } catch (error) {
@@ -49,6 +52,7 @@ export const Baserow = {
 
     // Fetch all quotes from Baserow (with pagination)
     async fetchQuotes(settings) {
+        this.validate(settings);
         const allQuotes = [];
         let page = 1;
 

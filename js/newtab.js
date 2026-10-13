@@ -232,7 +232,12 @@ class QuoteManager {
                 this.settings = { ...this.settings, ...changes.settings.newValue };
                 this.applyTheme();
             }
-            if (changes.customQuotes || changes.airtableData || changes.airtableSettings) {
+            // Reload when the quote pool actually changes. Typing in the
+            // integration form also fires airtableSettings changes, so only
+            // react to the enable toggle, not every field edit.
+            const toggled = changes.airtableSettings &&
+                changes.airtableSettings.oldValue?.enabled !== changes.airtableSettings.newValue?.enabled;
+            if (changes.customQuotes || changes.airtableData || toggled) {
                 this.loadAndDisplayQuote();
             }
         });
@@ -747,17 +752,24 @@ class QuoteManager {
             return;
         }
 
+        const reject = (message) => {
+            this.showNotification(message, 'error');
+            // Drop the rejected file so a previously selected one isn't imported by mistake
+            event.target.value = '';
+            this.selectedCsvFile = null;
+            document.getElementById('csvFileName').textContent = '';
+            document.getElementById('importCsvBtn').disabled = true;
+        };
+
         // Check file size (1MB limit)
         const maxSize = 1024 * 1024; // 1MB
         if (file.size > maxSize) {
-            this.showNotification('File too large. Maximum size is 1MB.', 'error');
-            return;
+            return reject('File too large. Maximum size is 1MB.');
         }
 
         // Check file type
-        if (!file.name.endsWith('.csv')) {
-            this.showNotification('Please select a CSV file.', 'error');
-            return;
+        if (!file.name.toLowerCase().endsWith('.csv')) {
+            return reject('Please select a CSV file.');
         }
 
         // Store the file for later import
@@ -827,6 +839,10 @@ class QuoteManager {
     }
 
     parseCSV(text) {
+        // Strip UTF-8 BOM (Excel's "CSV UTF-8" export adds one), otherwise the
+        // first header cell reads as "﻿Quote" and never matches.
+        text = text.replace(/^﻿/, '');
+
         // Parse CSV handling multiline quoted fields
         const records = [];
         let fields = [];
