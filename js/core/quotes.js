@@ -13,7 +13,7 @@ export const Quotes = {
                 quotes.push(...data.customQuotes);
             }
 
-            // Add AirTable quotes if enabled
+            // Add AirTable / Baserow quotes if enabled
             if (data.airtableSettings.enabled) {
                 const airtableQuotes = await Storage.getAirtableQuotes(data.airtableData);
                 if (airtableQuotes.length > 0) {
@@ -30,7 +30,7 @@ export const Quotes = {
             // Fallback if no quotes available
             if (quotes.length === 0) {
                 return [{
-                    text: "Welcome! Add your own quotes, enable stock quotes, or connect AirTable in settings.",
+                    text: "Welcome! Add your own quotes, enable stock quotes, or connect AirTable or Baserow in settings.",
                     author: "Quote Extension"
                 }];
             }

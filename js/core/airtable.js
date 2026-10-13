@@ -1,6 +1,4 @@
 // AirTable Module - Simplified AirTable integration
-import { Storage } from './storage.js';
-
 export const AirTable = {
     // Test connection to AirTable
     async testConnection(settings) {
@@ -86,32 +84,5 @@ export const AirTable = {
             author: author.toString().trim(),
             source: 'airtable'
         };
-    },
-
-    // Sync quotes from AirTable
-    async sync() {
-        try {
-            const data = await Storage.get(['airtableSettings']);
-            const settings = data.airtableSettings || {};
-
-            if (!settings.enabled) {
-                throw new Error('AirTable integration is disabled');
-            }
-
-            const quotes = await this.fetchQuotes(settings);
-            await Storage.setAirtableQuotes(quotes);
-
-            return {
-                success: true,
-                recordCount: quotes.length,
-                lastSync: new Date().toISOString()
-            };
-        } catch (error) {
-            console.error('AirTable sync failed:', error);
-            return {
-                success: false,
-                error: error.message
-            };
-        }
     }
 };

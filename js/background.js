@@ -1,5 +1,5 @@
-// Background Service Worker - Simplified AirTable Sync
-import { AirTable } from './core/airtable.js';
+// Background Service Worker - Remote quote sync (AirTable / Baserow)
+import { Remote } from './core/remote.js';
 import { Storage } from './core/storage.js';
 
 class SyncManager {
@@ -58,7 +58,7 @@ class SyncManager {
                         delayInMinutes: 1,
                         periodInMinutes
                     });
-                    console.log(`AirTable sync scheduled: ${settings.syncFrequency}`);
+                    console.log(`${Remote.provider(settings).name} sync scheduled: ${settings.syncFrequency}`);
                 }
             }
         } catch (error) {
@@ -69,7 +69,7 @@ class SyncManager {
     async testConnection() {
         try {
             const data = await Storage.get(['airtableSettings']);
-            return await AirTable.testConnection(data.airtableSettings);
+            return await Remote.testConnection(data.airtableSettings);
         } catch (error) {
             return { success: false, error: error.message };
         }
@@ -81,18 +81,18 @@ class SyncManager {
         }
 
         this.syncInProgress = true;
-        console.log('Starting AirTable sync');
+        console.log('Starting remote quote sync');
 
         try {
-            const result = await AirTable.sync();
+            const result = await Remote.sync();
 
             if (result.success) {
-                console.log(`AirTable sync completed: ${result.recordCount} quotes`);
+                console.log(`Remote sync completed: ${result.recordCount} quotes`);
             }
 
             return result;
         } catch (error) {
-            console.error('AirTable sync failed:', error);
+            console.error('Remote sync failed:', error);
             return { success: false, error: error.message };
         } finally {
             this.syncInProgress = false;

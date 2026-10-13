@@ -1,7 +1,8 @@
 // New Tab Random Quote - Simplified Main Script
 import { Storage } from './core/storage.js';
 import { Quotes } from './core/quotes.js';
-import { AirTable } from './core/airtable.js';
+import { Remote } from './core/remote.js';
+import { DEFAULT_BASEROW_URL } from './core/baserow.js';
 
 class QuoteManager {
     constructor() {
@@ -318,11 +319,16 @@ class QuoteManager {
         const fontSizeRadio = document.querySelector(`input[name="fontSize"][value="${this.settings.fontSize || 'medium'}"]`);
         if (fontSizeRadio) fontSizeRadio.checked = true;
 
-        // AirTable settings
+        // Remote database settings (AirTable / Baserow)
+        const provider = this.airtableSettings.provider || 'airtable';
         document.getElementById('airtableEnabled').checked = this.airtableSettings.enabled;
+        document.getElementById('remoteProvider').value = provider;
         document.getElementById('airtableToken').value = this.airtableSettings.apiToken || '';
         document.getElementById('airtableBaseId').value = this.airtableSettings.baseId || '';
         document.getElementById('airtableTableName').value = this.airtableSettings.tableName || '';
+        document.getElementById('baserowToken').value = this.airtableSettings.baserowToken || '';
+        document.getElementById('baserowUrl').value = this.airtableSettings.baserowUrl || DEFAULT_BASEROW_URL;
+        document.getElementById('baserowTableId').value = this.airtableSettings.baserowTableId || '';
         document.getElementById('airtableQuoteField').value = this.airtableSettings.quoteField || 'Quote';
         document.getElementById('airtableAuthorField').value = this.airtableSettings.authorField || 'Author';
         document.getElementById('airtableAutoSync').checked = this.airtableSettings.autoSync;
@@ -330,6 +336,8 @@ class QuoteManager {
 
         // Show/hide sections
         document.getElementById('airtableConfig').style.display = this.airtableSettings.enabled ? 'block' : 'none';
+        document.getElementById('airtableFields').style.display = provider === 'airtable' ? 'block' : 'none';
+        document.getElementById('baserowFields').style.display = provider === 'baserow' ? 'block' : 'none';
         document.getElementById('syncFrequencyGroup').style.display = this.airtableSettings.autoSync ? 'block' : 'none';
 
         // Update displays
@@ -488,17 +496,17 @@ class QuoteManager {
             this.populateModalSettings();
         });
 
-        // AirTable fields
-        ['airtableToken', 'airtableBaseId', 'airtableTableName', 'airtableQuoteField', 'airtableAuthorField'].forEach(fieldId => {
+        // Database provider (AirTable / Baserow)
+        document.getElementById('remoteProvider').addEventListener('change', async (e) => {
+            this.airtableSettings.provider = e.target.value;
+            await Storage.set({ airtableSettings: this.airtableSettings });
+            this.populateModalSettings();
+        });
+
+        // Database fields
+        Object.keys(this.remoteFieldMapping).forEach(fieldId => {
             document.getElementById(fieldId).addEventListener('change', async (e) => {
-                const mapping = {
-                    airtableToken: 'apiToken',
-                    airtableBaseId: 'baseId',
-                    airtableTableName: 'tableName',
-                    airtableQuoteField: 'quoteField',
-                    airtableAuthorField: 'authorField'
-                };
-                this.airtableSettings[mapping[fieldId]] = e.target.value;
+                this.airtableSettings[this.remoteFieldMapping[fieldId]] = e.target.value.trim();
                 await Storage.set({ airtableSettings: this.airtableSettings });
             });
         });
@@ -543,6 +551,39 @@ class QuoteManager {
         });
     }
 
+    // Form field id -> airtableSettings key, for both providers
+    get remoteFieldMapping() {
+        return {
+            airtableToken: 'apiToken',
+            airtableBaseId: 'baseId',
+            airtableTableName: 'tableName',
+            baserowToken: 'baserowToken',
+            baserowUrl: 'baserowUrl',
+            baserowTableId: 'baserowTableId',
+            airtableQuoteField: 'quoteField',
+            airtableAuthorField: 'authorField'
+        };
+    }
+
+    readRemoteSettingsFromForm() {
+        for (const [fieldId, key] of Object.entries(this.remoteFieldMapping)) {
+            this.airtableSettings[key] = document.getElementById(fieldId).value.trim();
+        }
+        this.airtableSettings.provider = document.getElementById('remoteProvider').value;
+    }
+
+    // Baserow can live on any host (cloud or self-hosted), so its origin is
+    // requested at runtime. Must be called before any await to keep the user gesture.
+    async ensureHostPermission() {
+        const origin = Remote.requiredOrigin(this.airtableSettings);
+        if (!origin) return;
+
+        const granted = await chrome.permissions.request({ origins: [origin] });
+        if (!granted) {
+            throw new Error(`Permission to access ${origin.replace('/*', '')} was denied`);
+        }
+    }
+
     async testAirTableConnection() {
         const testBtn = document.getElementById('testConnectionBtn');
         const originalText = testBtn.textContent;
@@ -552,12 +593,11 @@ class QuoteManager {
             testBtn.disabled = true;
 
             // Update settings from form
-            this.airtableSettings.apiToken = document.getElementById('airtableToken').value;
-            this.airtableSettings.baseId = document.getElementById('airtableBaseId').value;
-            this.airtableSettings.tableName = document.getElementById('airtableTableName').value;
+            this.readRemoteSettingsFromForm();
+            await this.ensureHostPermission();
             await Storage.set({ airtableSettings: this.airtableSettings });
 
-            const result = await AirTable.testConnection(this.airtableSettings);
+            const result = await Remote.testConnection(this.airtableSettings);
             this.showNotification(
                 result.success ? 'Connection test successful!' : result.error,
                 result.success ? 'success' : 'error'
@@ -579,11 +619,8 @@ class QuoteManager {
             syncBtn.disabled = true;
 
             // Update settings from form
-            this.airtableSettings.apiToken = document.getElementById('airtableToken').value;
-            this.airtableSettings.baseId = document.getElementById('airtableBaseId').value;
-            this.airtableSettings.tableName = document.getElementById('airtableTableName').value;
-            this.airtableSettings.quoteField = document.getElementById('airtableQuoteField').value;
-            this.airtableSettings.authorField = document.getElementById('airtableAuthorField').value;
+            this.readRemoteSettingsFromForm();
+            await this.ensureHostPermission();
             await Storage.set({ airtableSettings: this.airtableSettings });
 
             // Trigger sync via background script

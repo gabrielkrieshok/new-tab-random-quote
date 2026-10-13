@@ -16,11 +16,16 @@ export const Storage = {
             customDarkText: '#f1f5f9'
         },
         customQuotes: [],
+        // Remote quote source settings (key name kept for backward compatibility)
         airtableSettings: {
             enabled: false,
+            provider: 'airtable',
             apiToken: '',
             baseId: '',
             tableName: '',
+            baserowToken: '',
+            baserowUrl: 'https://api.baserow.io',
+            baserowTableId: '',
             quoteField: 'Quote',
             authorField: 'Author',
             autoSync: false,
@@ -86,7 +91,7 @@ export const Storage = {
 
             const [syncResult, localResult] = await Promise.all([
                 chrome.storage.sync.get(['settings', 'airtableSettings', 'airtableData']),
-                chrome.storage.local.get(['customQuotes', 'airtableApiToken'])
+                chrome.storage.local.get(['customQuotes', 'airtableApiToken', 'baserowApiToken'])
             ]);
 
             return {
@@ -95,7 +100,8 @@ export const Storage = {
                 airtableSettings: {
                     ...this.defaults.airtableSettings,
                     ...syncResult.airtableSettings,
-                    apiToken: localResult.airtableApiToken || ''
+                    apiToken: localResult.airtableApiToken || '',
+                    baserowToken: localResult.baserowApiToken || ''
                 },
                 airtableData: syncResult.airtableData || {}
             };
@@ -118,7 +124,7 @@ export const Storage = {
                     localKeys.push('customQuotes');
                 } else if (key === 'airtableSettings') {
                     syncKeys.push('airtableSettings');
-                    localKeys.push('airtableApiToken');
+                    localKeys.push('airtableApiToken', 'baserowApiToken');
                 } else {
                     syncKeys.push(key);
                 }
@@ -139,7 +145,8 @@ export const Storage = {
                 result.airtableSettings = {
                     ...this.defaults.airtableSettings,
                     ...result.airtableSettings,
-                    apiToken: localResult.airtableApiToken || ''
+                    apiToken: localResult.airtableApiToken || '',
+                    baserowToken: localResult.baserowApiToken || ''
                 };
             }
 
@@ -160,10 +167,13 @@ export const Storage = {
                 if (key === 'customQuotes') {
                     localData.customQuotes = value;
                 } else if (key === 'airtableSettings') {
-                    const { apiToken, ...rest } = value;
+                    const { apiToken, baserowToken, ...rest } = value;
                     syncData.airtableSettings = rest;
                     if (apiToken !== undefined) {
                         localData.airtableApiToken = apiToken;
+                    }
+                    if (baserowToken !== undefined) {
+                        localData.baserowApiToken = baserowToken;
                     }
                 } else {
                     syncData[key] = value;

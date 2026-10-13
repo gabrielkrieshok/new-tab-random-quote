@@ -113,7 +113,7 @@
                                 </div>
 
                                 <p class="about-description">
-                                    Built with modern web standards (Manifest V3, ES Modules) and a focus on simplicity, privacy, and performance. Features 100+ curated quotes, custom quote management, AirTable integration, CSV import, and automatic theme detection.
+                                    Built with modern web standards (Manifest V3, ES Modules) and a focus on simplicity, privacy, and performance. Features 100+ curated quotes, custom quote management, AirTable and Baserow integration, CSV import, and automatic theme detection.
                                 </p>
 
                                 <p class="about-links">
@@ -352,36 +352,66 @@
                             </div>
                         </div>
 
-                        <!-- AirTable Section -->
+                        <!-- Remote Database Section (AirTable / Baserow) -->
                         <div class="setting-group">
-                            <h3 class="setting-subtitle">AirTable Integration</h3>
+                            <h3 class="setting-subtitle">AirTable &amp; Baserow Integration</h3>
                             <p class="setting-description">
-                                Connect your personal AirTable database to manage quotes from a centralized location.
-                                Perfect for maintaining large quote collections across multiple devices. Your AirTable base
+                                Connect your personal AirTable or Baserow database to manage quotes from a centralized location.
+                                Perfect for maintaining large quote collections across multiple devices. Your table
                                 can serve as a master quote library that automatically syncs to the extension.
                             </p>
                             <label class="switch-label">
                                 <input type="checkbox" id="airtableEnabled" class="switch-input">
                                 <span class="switch-slider"></span>
-                                Enable AirTable integration
+                                Enable database integration
                             </label>
                         </div>
 
                         <div class="airtable-config" id="airtableConfig" style="display: none;">
                             <div class="form-group">
-                                <label for="airtableToken">Personal Access Token</label>
-                                <input type="password" id="airtableToken" placeholder="Enter your token">
-                                <p class="field-help">Get from <a href="https://airtable.com/create/tokens" target="_blank">AirTable</a></p>
+                                <label for="remoteProvider">Database</label>
+                                <select id="remoteProvider" class="form-select">
+                                    <option value="airtable" selected>AirTable</option>
+                                    <option value="baserow">Baserow</option>
+                                </select>
                             </div>
 
-                            <div class="form-group">
-                                <label for="airtableBaseId">Base ID</label>
-                                <input type="text" id="airtableBaseId" placeholder="app1234567890abcd">
+                            <div id="airtableFields">
+                                <div class="form-group">
+                                    <label for="airtableToken">Personal Access Token</label>
+                                    <input type="password" id="airtableToken" placeholder="Enter your token">
+                                    <p class="field-help">Get from <a href="https://airtable.com/create/tokens" target="_blank">AirTable</a></p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="airtableBaseId">Base ID</label>
+                                    <input type="text" id="airtableBaseId" placeholder="app1234567890abcd">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="airtableTableName">Table Name</label>
+                                    <input type="text" id="airtableTableName" placeholder="Quotes">
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <label for="airtableTableName">Table Name</label>
-                                <input type="text" id="airtableTableName" placeholder="Quotes">
+                            <div id="baserowFields" style="display: none;">
+                                <div class="form-group">
+                                    <label for="baserowToken">Database Token</label>
+                                    <input type="password" id="baserowToken" placeholder="Enter your token">
+                                    <p class="field-help">Create under Settings &rarr; Database tokens in <a href="https://baserow.io" target="_blank">Baserow</a>. Read access is enough.</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="baserowUrl">API URL</label>
+                                    <input type="url" id="baserowUrl" placeholder="https://api.baserow.io">
+                                    <p class="field-help">Use https://api.baserow.io for Baserow Cloud, or your own server's URL if self-hosted.</p>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="baserowTableId">Table ID</label>
+                                    <input type="text" id="baserowTableId" placeholder="123456">
+                                    <p class="field-help">The number after /table/ in the table's URL.</p>
+                                </div>
                             </div>
 
                             <div class="form-row">
